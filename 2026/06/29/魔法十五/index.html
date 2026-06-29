@@ -6,13 +6,15 @@
   
   <title>魔法十五 | Ou Ruiqiu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="article">
+  <meta name="description" content="魔法十五              * {             box-sizing: border-box;         }         .magic-game body {             font-family: Arial, sans-serif;             display: flex;             flex">
+<meta property="og:type" content="article">
 <meta property="og:title" content="魔法十五">
 <meta property="og:url" content="https://ouruiqiu.github.io/2026/06/29/%E9%AD%94%E6%B3%95%E5%8D%81%E4%BA%94/index.html">
 <meta property="og:site_name" content="Ou Ruiqiu">
+<meta property="og:description" content="魔法十五              * {             box-sizing: border-box;         }         .magic-game body {             font-family: Arial, sans-serif;             display: flex;             flex">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-06-29T07:29:58.723Z">
+<meta property="article:modified_time" content="2026-06-29T07:37:38.255Z">
 <meta property="article:author" content="Ou Ruiqiu">
 <meta name="twitter:card" content="summary">
   
@@ -98,12 +100,290 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <iframe src="/games/魔法十五.html" width="100%" height="650px" frameborder="0" style="margin:0 auto;display:block;"></iframe>
+        
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魔法十五</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .magic-game body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 10px;
+        }
+        .magic-game h1 {
+            color: #2c3e50;
+            margin: 10px 0;
+            font-size: clamp(20px, 5vw, 32px);
+        }
+        .magic-game .game-wrapper {
+            display: flex;
+            gap: clamp(10px, 2vw, 30px);
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 620px;
+        }
+        .magic-game .player-area {
+            width: clamp(80px, 18vw, 120px);
+            min-height: 160px;
+            border: 2px dashed;
+            padding: 8px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            font-size: clamp(12px, 2.5vw, 16px);
+            font-weight: bold;
+        }
+        .magic-game #player1Area {
+            border-color: #e74c3c;
+        }
+        .magic-game #player2Area {
+            border-color: #3498db;
+        }
+        .magic-game .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(6px, 1.5vw, 10px);
+            margin: 10px 0;
+            width: clamp(180px, 50vw, 260px);
+            aspect-ratio: 1;
+        }
+        .magic-game .card {
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(18px, 4vw, 28px);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            user-select: none;
+            width: 100%;
+            aspect-ratio: 1;
+        }
+        .magic-game .card:hover:not(.disabled) {
+            background-color: #45a049;
+        }
+        .magic-game .card.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .magic-game .status {
+            font-size: clamp(16px, 3.5vw, 24px);
+            margin: 8px 0;
+            color: #333;
+            text-align: center;
+        }
+        .magic-game button {
+            padding: 8px 18px;
+            font-size: clamp(14px, 3vw, 16px);
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 8px;
+        }
+        .magic-game button:hover {
+            background-color: #007a9e;
+        }
+        .magic-game .rules {
+            background-color: #fff;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin: 10px 0;
+            max-width: 400px;
+            width: 100%;
+            font-size: clamp(12px, 2.5vw, 14px);
+        }
+        .magic-game .rules h3 {
+            margin: 0 0 8px 0;
+            font-size: clamp(14px, 3vw, 16px);
+        }
+        .magic-game .rules ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .magic-game .rules li {
+            margin: 4px 0;
+        }
+        @keyframes victoryJump {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+        .magic-game .victory-message {
+            font-size: clamp(24px, 6vw, 36px);
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: victoryJump 0.5s ease infinite;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .magic-game .player1-color { color: #e74c3c; }
+        .magic-game .player2-color { color: #3498db; }
+    </style>
+</head>
+<body>
+<div class="magic-game">
+    <h1>魔法十五</h1>
+    <div class="rules">
+        <h3>游戏规则：</h3>
+        <ul>
+            <li>1. 玩家轮流选择数字卡</li>
+            <li>2. 先收集3张和为15的卡牌者胜</li>
+            <li>3. 数字卡取完未分胜负则为平局</li>
+        </ul>
+    </div>
+    <div class="status" id="status">当前回合：🔥烈焰巫师</div>
+    <div id="victoryMessage"></div>
+
+    <div class="game-wrapper">
+        <div class="player-area" id="player1Area"><div>🔥烈焰巫师</div></div>
+        <div class="game-container" id="gameContainer"></div>
+        <div class="player-area" id="player2Area"><div>❄️寒冰法师</div></div>
+    </div>
+
+    <button onclick="restartGame()">重新开始</button>
+
+    <script>
+        const players = {
+            1: {
+                name: "🔥烈焰巫师",
+                areaId: "player1Area",
+                colorClass: "player1-color",
+                numbers: []
+            },
+            2: {
+                name: "❄️寒冰法师",
+                areaId: "player2Area",
+                colorClass: "player2-color",
+                numbers: []
+            }
+        };
+
+        let currentPlayer = 1;
+        let gameEnded = false;
+
+        function initGame() {
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = '';
+            
+            const numbers = Array.from({length:9}, (_,i)=>i+1).sort(() => Math.random()-0.5);
+            
+            numbers.forEach(num => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.textContent = num;
+                card.addEventListener('click', () => selectCard(num, card));
+                container.appendChild(card);
+            });
+        }
+
+        function selectCard(number, cardElement) {
+            if (gameEnded || cardElement.classList.contains('disabled')) return;
+
+            const currentPlayerObj = players[currentPlayer];
+            
+            cardElement.classList.add('disabled');
+            const targetArea = document.getElementById(currentPlayerObj.areaId);
+
+            targetArea.appendChild(cardElement);
+
+            currentPlayerObj.numbers.push(number);
+            
+            if (checkWin(currentPlayerObj.numbers)) {
+                showVictory(currentPlayerObj);
+                return;
+            }
+
+            if (players[1].numbers.length + players[2].numbers.length === 9) {
+                endGame('✨ 平局！势均力敌！✨');
+                return;
+            }
+
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updateStatus();
+        }
+
+        function checkWin(numbers) {
+            if (numbers.length < 3) return false;
+            
+            for (let i = 0; i < numbers.length; i++) {
+                for (let j = i + 1; j < numbers.length; j++) {
+                    for (let k = j + 1; k < numbers.length; k++) {
+                        if (numbers[i] + numbers[j] + numbers[k] === 15) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function showVictory(winner) {
+            const victoryElement = document.getElementById('victoryMessage');
+            victoryElement.innerHTML = `
+                <div class="victory-message ${winner.colorClass}">
+                    🎉 ${winner.name} 获得胜利！🎉
+                </div>
+            `;
+            endGame();
+        }
+
+        function endGame(message) {
+            gameEnded = true;
+            if (message) {
+                document.getElementById('victoryMessage').innerHTML = 
+                    `<div class="victory-message">${message}</div>`;
+            }
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('disabled');
+            });
+        }
+
+        function updateStatus() {
+            document.getElementById('status').textContent = 
+                `当前回合：${players[currentPlayer].name}`;
+        }
+
+        function restartGame() {
+            currentPlayer = 1;
+            players[1].numbers = [];
+            players[2].numbers = [];
+            document.getElementById('player1Area').innerHTML = '<div>🔥烈焰巫师</div>';
+            document.getElementById('player2Area').innerHTML = '<div>❄️寒冰法师</div>';
+            document.getElementById('victoryMessage').innerHTML = '';
+            gameEnded = false;
+            updateStatus();
+            initGame();
+        }
+
+        initGame();
+    </script>
+</div>
+</body>
+</html>
+
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://ouruiqiu.github.io/2026/06/29/%E9%AD%94%E6%B3%95%E5%8D%81%E4%BA%94/" data-id="cuidsnTl93qb4hzUapAA7bKb1" data-title="魔法十五" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://ouruiqiu.github.io/2026/06/29/%E9%AD%94%E6%B3%95%E5%8D%81%E4%BA%94/" data-id="cuidk8lFw7_zgo3wEQWzkFAEl" data-title="魔法十五" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
