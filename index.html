@@ -152,9 +152,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>魔法十五</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
         .magic-game body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -167,19 +164,16 @@
         .magic-game h1 {
             color: #2c3e50;
             margin: 10px 0;
-            font-size: clamp(20px, 5vw, 32px);
+            font-size: 24px;
         }
         .magic-game .game-wrapper {
             display: flex;
-            gap: clamp(10px, 2vw, 30px);
+            gap: 20px;
             align-items: flex-start;
             justify-content: center;
-            flex-wrap: wrap;
-            width: 100%;
-            max-width: 620px;
         }
         .magic-game .player-area {
-            width: clamp(80px, 18vw, 120px);
+            width: 100px;
             min-height: 160px;
             border: 2px dashed;
             padding: 8px;
@@ -188,7 +182,7 @@
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            font-size: clamp(12px, 2.5vw, 16px);
+            font-size: 14px;
             font-weight: bold;
         }
         .magic-game #player1Area {
@@ -199,11 +193,9 @@
         }
         .magic-game .game-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: clamp(6px, 1.5vw, 10px);
-            margin: 10px 0;
-            width: clamp(180px, 50vw, 260px);
-            aspect-ratio: 1;
+            grid-template-columns: repeat(3, 80px);
+            gap: 6px;
+            margin: 0;
         }
         .magic-game .card {
             background-color: #4CAF50;
@@ -211,13 +203,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: clamp(18px, 4vw, 28px);
+            font-size: 24px;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.3s;
             user-select: none;
-            width: 100%;
-            aspect-ratio: 1;
+            width: 80px;
+            height: 80px;
         }
         .magic-game .card:hover:not(.disabled) {
             background-color: #45a049;
@@ -227,14 +219,14 @@
             cursor: not-allowed;
         }
         .magic-game .status {
-            font-size: clamp(16px, 3.5vw, 24px);
+            font-size: 18px;
             margin: 8px 0;
             color: #333;
             text-align: center;
         }
         .magic-game button {
             padding: 8px 18px;
-            font-size: clamp(14px, 3vw, 16px);
+            font-size: 14px;
             background-color: #008CBA;
             color: white;
             border: none;
@@ -250,13 +242,12 @@
             padding: 12px 16px;
             border-radius: 10px;
             margin: 10px 0;
-            max-width: 400px;
-            width: 100%;
-            font-size: clamp(12px, 2.5vw, 14px);
+            width: 340px;
+            font-size: 14px;
         }
         .magic-game .rules h3 {
             margin: 0 0 8px 0;
-            font-size: clamp(14px, 3vw, 16px);
+            font-size: 16px;
         }
         .magic-game .rules ul {
             margin: 0;
@@ -271,7 +262,7 @@
             100% { transform: translateY(0); }
         }
         .magic-game .victory-message {
-            font-size: clamp(24px, 6vw, 36px);
+            font-size: 28px;
             font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
             animation: victoryJump 0.5s ease infinite;
