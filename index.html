@@ -273,6 +273,34 @@
         }
         .magic-game .player1-color { color: #e74c3c; }
         .magic-game .player2-color { color: #3498db; }
+
+        @media (max-width: 600px) {
+            .magic-game h1 { font-size: 20px; }
+            .magic-game .game-wrapper {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            .magic-game .player-area {
+                width: 258px;
+                min-height: auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                font-size: 13px;
+                padding: 6px 8px;
+            }
+            .magic-game .player-area div:first-child {
+                width: 100%;
+                text-align: center;
+            }
+            .magic-game .rules {
+                width: auto;
+                max-width: 340px;
+            }
+            .magic-game .status { font-size: 16px; }
+            .magic-game .victory-message { font-size: 22px; }
+        }
     </style>
 </head>
 <body>

@@ -14,7 +14,7 @@
 <meta property="og:description" content="魔法十五              .magic-game body {             font-family: Arial, sans-serif;             display: flex;             flex-direction: column;             align-items: center;">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-06-28T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-06-29T07:52:16.054Z">
+<meta property="article:modified_time" content="2026-06-29T07:59:15.241Z">
 <meta property="article:author" content="Ou Ruiqiu">
 <meta name="twitter:card" content="summary">
   
@@ -229,6 +229,34 @@
         }
         .magic-game .player1-color { color: #e74c3c; }
         .magic-game .player2-color { color: #3498db; }
+
+        @media (max-width: 600px) {
+            .magic-game h1 { font-size: 20px; }
+            .magic-game .game-wrapper {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            .magic-game .player-area {
+                width: 258px;
+                min-height: auto;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                font-size: 13px;
+                padding: 6px 8px;
+            }
+            .magic-game .player-area div:first-child {
+                width: 100%;
+                text-align: center;
+            }
+            .magic-game .rules {
+                width: auto;
+                max-width: 340px;
+            }
+            .magic-game .status { font-size: 16px; }
+            .magic-game .victory-message { font-size: 22px; }
+        }
     </style>
 </head>
 <body>
