@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Ou Ruiqiu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="魔法十五              body {             font-family: Arial, sans-serif;             display: flex;             flex-direction: column;             align-items: center;             background-">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ou Ruiqiu">
+<meta property="og:url" content="https://ouruiqiu.github.io/%E9%AD%94%E6%B3%95%E5%8D%81%E4%BA%94.html">
+<meta property="og:site_name" content="Ou Ruiqiu">
+<meta property="og:description" content="魔法十五              body {             font-family: Arial, sans-serif;             display: flex;             flex-direction: column;             align-items: center;             background-">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-29T07:01:48.917Z">
+<meta property="article:modified_time" content="2025-04-03T08:43:06.000Z">
+<meta property="article:author" content="Ou Ruiqiu">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Ou Ruiqiu" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+  
+<meta name="generator" content="Hexo 8.1.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Ou Ruiqiu</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS 订阅"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="搜索"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://ouruiqiu.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/%E9%AD%94%E6%B3%95%E5%8D%81%E4%BA%94.html" class="article-date">
+  <time class="dt-published" datetime="2026-06-29T07:01:48.917Z" itemprop="datePublished">2026-06-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>魔法十五</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+
+        .game-wrapper {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .player-area {
+            width: 120px;
+            min-height: 200px;
+            border: 2px dashed;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        #player1Area {
+            border-color: #e74c3c;
+        }
+
+        #player2Area {
+            border-color: #3498db;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px;
+        }
+
+        .card {
+            width: 80px;
+            height: 80px;
+            background-color: #4CAF50;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            font-size: 24px;
+            margin: 10px;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .rules {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            max-width: 400px;
+        }
+
+        @keyframes victoryJump {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        .victory-message {
+            font-size: 36px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: victoryJump 0.5s ease infinite;
+            margin: 20px 0;
+        }
+
+        .player1-color {
+            color: #e74c3c;
+        }
+
+        .player2-color {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>魔法十五</h1>
+    <div class="rules">
+        <h3>游戏规则：</h3>
+        <ul>
+            <li>1. 玩家轮流选择数字卡</li>
+            <li>2. 先收集3张和为15的卡牌者胜</li>
+            <li>3. 数字卡取完未分胜负则为平局</li>
+        </ul>
+    </div>
+    <div class="status" id="status">当前回合：🔥烈焰巫师</div>
+    <div id="victoryMessage"></div>
+
+    <div class="game-wrapper">
+        <div class="player-area" id="player1Area"></div>
+        <div class="game-container" id="gameContainer"></div>
+        <div class="player-area" id="player2Area"></div>
+    </div>
+
+    <button onclick="restartGame()">重新开始</button>
+
+    <script>
+        const players = {
+            1: {
+                name: "🔥烈焰巫师",
+                areaId: "player1Area",
+                colorClass: "player1-color",
+                numbers: []
+            },
+            2: {
+                name: "❄️寒冰法师",
+                areaId: "player2Area",
+                colorClass: "player2-color",
+                numbers: []
+            }
+        };
+
+        let currentPlayer = 1;
+        let gameEnded = false;
+
+        function initGame() {
+            const container = document.getElementById('gameContainer');
+            container.innerHTML = '';
+            
+            const numbers = Array.from({length:9}, (_,i)=>i+1).sort(() => Math.random()-0.5);
+            
+            numbers.forEach(num => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.textContent = num;
+                card.addEventListener('click', () => selectCard(num, card));
+                container.appendChild(card);
+            });
+        }
+
+        function selectCard(number, cardElement) {
+            if (gameEnded || cardElement.classList.contains('disabled')) return;
+
+            const currentPlayerObj = players[currentPlayer];
+            
+            cardElement.classList.add('disabled');
+            const targetArea = document.getElementById(currentPlayerObj.areaId);
+
+            // 添加移动动画
+            cardElement.style.position = 'absolute';
+            cardElement.style.transition = 'all 0.3s ease';
+            const rect = cardElement.getBoundingClientRect();
+            cardElement.style.left = rect.left + 'px';
+            cardElement.style.top = rect.top + 'px';
+            
+            requestAnimationFrame(() => {
+                const targetRect = targetArea.getBoundingClientRect();
+                cardElement.style.left = (targetRect.left + targetArea.offsetWidth/2 - 40) + 'px';
+                cardElement.style.top = (targetRect.top + targetArea.offsetHeight/2 - 40) + 'px';
+                cardElement.style.transform = 'scale(0.8) rotate(360deg)';
+                
+                setTimeout(() => {
+                    targetArea.appendChild(cardElement);
+                    cardElement.style.position = '';
+                    cardElement.style.left = '';
+                    cardElement.style.top = '';
+                    cardElement.style.transform = 'scale(1) rotate(0deg)';
+                }, 300);
+            });
+
+            currentPlayerObj.numbers.push(number);
+            
+            if (checkWin(currentPlayerObj.numbers)) {
+                showVictory(currentPlayerObj);
+                return;
+            }
+
+            if (players[1].numbers.length + players[2].numbers.length === 9) {
+                endGame('✨ 平局！势均力敌！✨');
+                return;
+            }
+
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updateStatus();
+        }
+
+        function checkWin(numbers) {
+            if (numbers.length < 3) return false;
+            
+            for (let i = 0; i < numbers.length; i++) {
+                for (let j = i + 1; j < numbers.length; j++) {
+                    for (let k = j + 1; k < numbers.length; k++) {
+                        if (numbers[i] + numbers[j] + numbers[k] === 15) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        function showVictory(winner) {
+            const victoryElement = document.getElementById('victoryMessage');
+            victoryElement.innerHTML = `
+                <div class="victory-message ${winner.colorClass}">
+                    🎉 ${winner.name} 获得胜利！🎉
+                </div>
+            `;
+            endGame();
+        }
+
+        function endGame(message) {
+            gameEnded = true;
+            if (message) {
+                document.getElementById('victoryMessage').innerHTML = 
+                    `<div class="victory-message">${message}</div>`;
+            }
+            document.querySelectorAll('.card').forEach(card => {
+                card.classList.add('disabled');
+            });
+        }
+
+        function updateStatus() {
+            document.getElementById('status').textContent = 
+                `当前回合：${players[currentPlayer].name}`;
+        }
+
+        function restartGame() {
+            currentPlayer = 1;
+            players[1].numbers = [];
+            players[2].numbers = [];
+            document.getElementById('player1Area').innerHTML = '';
+            document.getElementById('player2Area').innerHTML = '';
+            document.getElementById('victoryMessage').innerHTML = '';
+            gameEnded = false;
+            updateStatus();
+            initGame();
+        }
+
+        initGame();
+    </script>
+</body>
+</html>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://ouruiqiu.github.io/%E9%AD%94%E6%B3%95%E5%8D%81%E4%BA%94.html" data-id="cuidjOh0z1H2ynpxLfK6a0NzE" data-title="" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E5%AD%A6/">数学</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E5%AD%A6/%E5%B0%8F%E5%AD%A6/">小学</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/personal/" rel="tag">personal</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/personal/" style="font-size: 10px;">personal</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/06/">六月 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">五月 2026</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/06/29/%E5%85%B3%E4%BA%8E%E6%88%91/">关于我</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/06/%E5%88%86%E6%95%B0%E8%BF%90%E7%AE%97/">分数运算</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 Ou Ruiqiu<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
