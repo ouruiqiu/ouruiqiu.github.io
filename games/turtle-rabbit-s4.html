@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>龟兔赛跑（第四季）· 同时博弈课堂互动系统</title>
+<style>
+  :root{
+    --bg:#f4f6f4; --card:#ffffff; --ink:#1f2a24; --sub:#5b6779; --line:#e2e8e2;
+    --brand:#0f766e; --brand-soft:#e6f4f1; --accent:#b45309; --accent-soft:#fdf1e3;
+    --turtle:#0f766e; --turtle-soft:#e6f4f1; --rabbit:#b45309; --rabbit-soft:#fdf1e3;
+    --ok:#0f7b4f; --ok-soft:#e6f6ee; --warn:#b45309; --warn-soft:#fff7e6;
+    --gain:#c0392b; --loss:#0f7b4f;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,-apple-system,"Segoe UI",sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:26px 18px 72px}
+  header.top{margin-bottom:18px}
+  .kicker{font-size:12px; letter-spacing:.14em; color:var(--brand); font-weight:700}
+  h1{font-size:26px; margin:6px 0 4px; letter-spacing:-.01em}
+  .lede{color:var(--sub); font-size:14px; margin:0}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:20px 22px; margin-bottom:16px}
+  .card h2{font-size:16px; margin:0 0 14px; display:flex; align-items:center; gap:8px}
+  .card h2 .num{
+    width:22px;height:22px;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto
+  }
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+  @media (max-width:760px){.grid2{grid-template-columns:1fr}}
+  .btn{
+    border:none; border-radius:10px; padding:11px 20px; font-size:14px; font-weight:700; cursor:pointer;
+    font-family:inherit; transition:all .14s ease
+  }
+  .btn.primary{background:var(--brand); color:#fff; box-shadow:0 3px 10px rgba(15,118,110,.28)}
+  .btn.primary:hover{background:#0b5f59}
+  .btn.ghost{background:#fff; color:var(--sub); border:1px solid var(--line)}
+  .btn.ghost:hover{background:#f7f9f8; color:var(--ink)}
+  .btn:disabled{opacity:.45; cursor:not-allowed; box-shadow:none}
+  .rowbtns{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px}
+  .hint{font-size:12.5px; color:var(--sub); margin-top:10px}
+  .pill{display:inline-block; background:var(--brand-soft); color:var(--brand); font-size:12px; font-weight:700;
+    padding:3px 10px; border-radius:99px; white-space:nowrap}
+  .pill.gray{background:#eef1ee; color:var(--sub)}
+  .pill.amber{background:var(--accent-soft); color:var(--accent)}
+  .steps{display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap}
+  .steps .st{flex:1 1 90px; background:#eef1ee; border-radius:8px; padding:8px 10px; font-size:12px; color:var(--sub); text-align:center; border:1px solid transparent}
+  .steps .st.done{background:var(--ok-soft); color:var(--ok); font-weight:700}
+  .steps .st.now{background:var(--brand); color:#fff; font-weight:700; border-color:var(--brand)}
+  .callout{background:var(--brand-soft); border-left:3px solid var(--brand); border-radius:0 10px 10px 0; padding:12px 15px; font-size:13.5px; color:#0d4b47}
+  .callout.amber{background:var(--warn-soft); border-left-color:var(--warn); color:#7a4a05}
+  .callout.ok{background:var(--ok-soft); border-left-color:var(--ok); color:#0b5837}
+  .callout.gray{background:#f4f6f4; border-left-color:#9aa5a0; color:#4b5563}
+  ol.rules{margin:6px 0 0; padding-left:22px; font-size:14px}
+  ol.rules li{margin:7px 0}
+  table{width:100%; border-collapse:collapse; font-size:13.5px}
+  th,td{padding:9px 11px; text-align:left; border-bottom:1px solid var(--line)}
+  th{background:#f7f9f8; color:var(--sub); font-weight:700; font-size:12.5px; letter-spacing:.02em; white-space:nowrap}
+  td.num,th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+  tr.total-row td{background:#fbfcfb; font-weight:800; border-top:2px solid var(--line)}
+  .matwrap{overflow-x:auto}
+  table.matrix td,table.matrix th{text-align:center; border:1px solid var(--line); padding:10px 12px}
+  table.matrix th{background:#f7f9f8}
+  .pair{font-variant-numeric:tabular-nums}
+  .pair .nf{font-weight:800; color:var(--accent); display:block; text-align:right; font-size:16px; line-height:1.25}
+  .pair .ml{font-weight:800; color:var(--turtle); display:block; text-align:left; font-size:16px; line-height:1.25}
+  .mrow{font-weight:800; color:var(--turtle)}
+  table.matrix th.mrow{text-align:left; padding-left:16px}
+  .mcol{font-weight:800; color:var(--accent)}
+  .hide{display:none !important}
+  footer{color:var(--sub); font-size:12px; text-align:center; margin-top:24px}
+  .subhead{font-size:14px; font-weight:800; margin:22px 0 10px; color:var(--ink); display:flex; align-items:center; gap:8px}
+  .subhead::before{content:""; width:4px; height:15px; background:var(--brand); border-radius:2px; display:inline-block}
+  select.sel{
+    width:100%; max-width:220px; border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+    font-size:15px; font-family:inherit; color:var(--ink); background:#fff; font-weight:700
+  }
+  select.sel:focus{outline:none; border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft)}
+  .rolebox{border:1px solid var(--line); border-radius:12px; padding:16px 16px 14px; background:#fff}
+  .rolebox.turtle{border-top:4px solid var(--turtle)}
+  .rolebox.rabbit{border-top:4px solid var(--accent)}
+  .rolehead{display:flex; align-items:center; gap:10px; margin-bottom:12px}
+  .avt{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+       font-weight:800; font-size:15px; color:#fff; flex:0 0 auto}
+  .avt.t{background:var(--turtle)}
+  .avt.r{background:var(--accent)}
+  .rolehead .rname{font-weight:800; font-size:15px}
+  .rolehead small{display:block; color:var(--sub); font-weight:400; font-size:12px}
+
+  /* play head */
+  .playhead{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:12px}
+  .phleft{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+  .phright{display:flex; gap:10px; flex-wrap:wrap}
+  .balchip{display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:99px; padding:5px 14px 5px 5px; background:#fff}
+  .balchip b{font-size:19px; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+  .balchip small{color:var(--sub); font-size:11px; font-weight:600}
+  .balchip.t b{color:var(--turtle)}
+  .balchip.r b{color:var(--accent)}
+  .progress{height:7px; background:#e8ece8; border-radius:99px; overflow:hidden; margin-bottom:18px}
+  .progress i{display:block; height:100%; background:linear-gradient(90deg,var(--turtle),var(--accent)); width:0; transition:width .35s ease}
+
+  /* choose panel */
+  .turnbox{border:2px solid var(--line); border-radius:16px; padding:18px 18px 16px; background:#fff; margin-bottom:14px}
+  .turnbox.t{border-color:#bfe0da; background:linear-gradient(180deg,#f2faf8,#fff 60%)}
+  .turnbox.r{border-color:#f0d9bd; background:linear-gradient(180deg,#fdf7ef,#fff 60%)}
+  .turnhead{display:flex; align-items:center; gap:10px; margin-bottom:4px}
+  .turnhead .who{font-size:16px; font-weight:800}
+  .turnhead.t .who{color:var(--turtle)}
+  .turnhead.r .who{color:var(--accent)}
+  .turntip{font-size:12.5px; color:var(--sub); margin:0 0 14px}
+  .choose{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .choose button{
+    border:2px solid var(--line); background:#fff; border-radius:14px; padding:20px 12px; cursor:pointer;
+    font-family:inherit; transition:all .15s ease; text-align:center
+  }
+  .choose button .act{display:block; font-size:22px; font-weight:800; letter-spacing:.06em; color:var(--ink)}
+  .choose button .kbd{display:block; font-size:11.5px; color:var(--sub); margin-top:5px; font-weight:600}
+  .choose.t button:hover{border-color:var(--turtle); background:var(--turtle-soft); transform:translateY(-2px)}
+  .choose.r button:hover{border-color:var(--accent); background:var(--rabbit-soft); transform:translateY(-2px)}
+  .choose button:active{transform:translateY(0)}
+
+  .lockbox{border:2px dashed #c8d2cd; border-radius:16px; padding:18px; text-align:center; background:#f8faf9; margin-bottom:14px}
+  .lockbox .lk{font-size:14.5px; font-weight:800; color:var(--sub)}
+  .lockbox .lkbox{font-size:12.5px; color:var(--sub); margin-top:6px}
+  .masked{display:inline-block; min-width:120px; border-radius:10px; background:#e3e9e6; color:#8b9791;
+          font-weight:800; padding:8px 18px; margin-top:8px; letter-spacing:.3em}
+
+  /* reveal */
+  .versus{display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:stretch; margin:4px 0 14px}
+  @media (max-width:640px){.versus{grid-template-columns:1fr; gap:10px} .vs{display:none}}
+  .side{border:1px solid var(--line); border-radius:14px; padding:14px 16px; background:#fff}
+  .side.t{border-top:4px solid var(--turtle)}
+  .side.r{border-top:4px solid var(--accent)}
+  .side .sname{font-size:12.5px; color:var(--sub); font-weight:700; display:flex; justify-content:space-between; align-items:center}
+  .side .sact{font-size:26px; font-weight:800; letter-spacing:.05em; margin:6px 0 8px}
+  .side.t .sact{color:var(--turtle)}
+  .side.r .sact{color:var(--accent)}
+  .side .delta{font-size:15px; font-weight:800; font-variant-numeric:tabular-nums}
+  .vs{display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:800; color:#aab4ae}
+  .up{color:var(--gain)}
+  .dn{color:var(--loss)}
+  .resline{font-size:15px; font-weight:800; text-align:center; padding:12px; border-radius:12px; background:var(--brand-soft); color:#0d4b47}
+  .resline.amber{background:var(--accent-soft); color:#7a4a05}
+
+  .chip{display:inline-block; font-size:12px; font-weight:800; border-radius:7px; padding:2px 8px; margin:1px 2px 1px 0; white-space:nowrap}
+  .chip.t{background:var(--turtle-soft); color:var(--turtle)}
+  .chip.r{background:var(--rabbit-soft); color:var(--accent)}
+  .scorecards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px}
+  @media (max-width:640px){.scorecards{grid-template-columns:1fr}}
+  .sc{border:1px solid var(--line); border-radius:14px; padding:16px; background:#fff; text-align:center}
+  .sc.t{border-top:4px solid var(--turtle); background:linear-gradient(180deg,#f2faf8,#fff 55%)}
+  .sc.r{border-top:4px solid var(--accent); background:linear-gradient(180deg,#fdf7ef,#fff 55%)}
+  .sc .who{font-size:13px; color:var(--sub); font-weight:700}
+  .sc .big{font-size:38px; font-weight:800; letter-spacing:-.03em; font-variant-numeric:tabular-nums; line-height:1.15}
+  .sc.t .big{color:var(--turtle)}
+  .sc.r .big{color:var(--accent)}
+  .sc .unit{font-size:12.5px; color:var(--sub); font-weight:700}
+  details.dt{border:1px solid var(--line); border-radius:12px; padding:10px 14px; background:#fbfcfb; margin-top:14px}
+  details.dt summary{cursor:pointer; font-size:13px; font-weight:700; color:var(--sub)}
+  details.dt[open] summary{margin-bottom:10px}
+  .legend{font-size:12px; color:var(--sub); margin-top:8px}
+  .warnline{font-size:13px; font-weight:700; color:#b3261e; margin-top:10px}
+
+  /* 打印 / 存为 PDF */
+  @media print{
+    body{background:#fff}
+    .wrap{max-width:none; padding:0}
+    .matwrap{overflow:visible}
+    .card{box-shadow:none; break-inside:avoid; page-break-inside:avoid}
+    .steps,.rowbtns,footer{display:none !important}
+    .hide{display:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="kicker">同时博弈 · 课堂互动系统</div>
+    <h1>龟兔赛跑（第四季）</h1>
+    <p class="lede">乌龟 vs 兔子 · 大路 / 小路 · 3 轮 × 10 回合 · 每轮各 90 森林币起步</p>
+  </header>
+
+  <!-- ============ 第 1 页：规则 ============ -->
+  <section id="pageRules">
+    <div class="steps" id="navBar">
+      <div class="st now" data-nav="1">第 1 页 · 游戏规则</div>
+      <div class="st" data-nav="2">第 2 页 · 扮演角色</div>
+      <div class="st" data-nav="3">第 3 页 · 进行博弈</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">一</span>博弈模型介绍</h2>
+      <p style="font-size:14px;margin:0 0 14px">
+        龟兔赛跑同时博弈（第四季）的博弈矩阵如下。乌龟拥有「大路」和「小路」两个行动，兔子也拥有「大路」和「小路」两个行动。
+        每个格子里，<b>左下角</b>的实数是乌龟的支付，<b>右上角</b>的实数是兔子的支付。
+        「−5」代表输掉 5 个森林币，「5」代表赢得 5 个森林币。
+      </p>
+      <div class="matwrap">
+        <table class="matrix" id="matrixTable"></table>
+      </div>
+      <p class="legend">行 = 乌龟的行动，列 = 兔子的行动。<span style="color:var(--turtle);font-weight:700">左下绿字为乌龟支付</span>，
+        <span style="color:var(--accent);font-weight:700">右上橙字为兔子支付</span>。</p>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">二</span>游戏规则</h2>
+      <ol class="rules">
+        <li>一个小组扮演<b>乌龟</b>，一个小组扮演<b>兔子</b>。</li>
+        <li>双方进行 <b>3 轮</b>博弈游戏。</li>
+        <li>一轮游戏进行 <b>10 个</b>博弈回合。</li>
+        <li>每轮游戏开始时，两个小组都各自拥有 <b>90 个森林币</b>。</li>
+        <li>一轮博弈游戏结束后，两个小组拥有的森林币数量，即为其此轮游戏的得分。</li>
+        <li>三轮游戏的平均分（<b>精确到个位</b>），是其小组在此次博弈游戏中的得分。</li>
+      </ol>
+      <div class="callout" style="margin-top:16px">
+        <b>回合如何进行：</b>乌龟扮演者先选择行动，选择后<b>立即隐去</b>；随后兔子扮演者选择行动；双方都选好后，公布双方的行动选择和森林币得失，并进入下一回合。
+      </div>
+      <div class="rowbtns">
+        <button class="btn primary" id="btnToRole">下一步：填写扮演角色</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 第 2 页：角色 ============ -->
+  <section id="pageRole" class="hide">
+    <div class="steps" id="navBar2">
+      <div class="st done" data-nav="1">第 1 页 · 游戏规则</div>
+      <div class="st now" data-nav="2">第 2 页 · 扮演角色</div>
+      <div class="st" data-nav="3">第 3 页 · 进行博弈</div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">三</span>填写扮演角色</h2>
+      <p class="hint" style="margin:-4px 0 14px">请在下方下拉菜单中分别选择扮演「乌龟」和「兔子」的小组编号（可选范围 1 – 20）。</p>
+      <div class="grid2">
+        <div class="rolebox turtle">
+          <div class="rolehead">
+            <span class="avt t">龟</span>
+            <div><span class="rname">乌龟扮演者</span><small>行玩家 · 先选择行动</small></div>
+          </div>
+          <label class="hint" style="margin:0 0 6px;display:block">小组编号</label>
+          <select class="sel" id="selTurtle"></select>
+        </div>
+        <div class="rolebox rabbit">
+          <div class="rolehead">
+            <span class="avt r">兔</span>
+            <div><span class="rname">兔子扮演者</span><small>列玩家 · 后选择行动</small></div>
+          </div>
+          <label class="hint" style="margin:0 0 6px;display:block">小组编号</label>
+          <select class="sel" id="selRabbit"></select>
+        </div>
+      </div>
+      <div class="warnline hide" id="sameWarn">两个角色不能是同一小组，请重新选择。</div>
+      <div class="rowbtns">
+        <button class="btn primary" id="btnStartRound1">第一轮开始</button>
+        <button class="btn ghost" id="btnBackRules">返回规则页</button>
+      </div>
+      <p class="hint">点击「第一轮开始」后，双方森林币各重置为 <b>90</b>，进入第 1 轮第 1 回合。</p>
+    </div>
+  </section>
+
+  <!-- ============ 第 3 页：进行博弈 ============ -->
+  <section id="pagePlay" class="hide">
+    <div class="steps" id="navBar3">
+      <div class="st done" data-nav="1">第 1 页 · 游戏规则</div>
+      <div class="st done" data-nav="2">第 2 页 · 扮演角色</div>
+      <div class="st now" data-nav="3">第 3 页 · 进行博弈</div>
+    </div>
+
+    <!-- 回合进行 -->
+    <div class="card" id="viewStep">
+      <div class="playhead">
+        <div class="phleft">
+          <span class="pill" id="roundPill">第一轮</span>
+          <span class="pill gray" id="stepPill">第 1 / 10 回合</span>
+        </div>
+        <div class="phright">
+          <div class="balchip t"><span class="avt t" style="width:26px;height:26px;font-size:13px">龟</span>
+            <span><small id="tName">第 1 组</small><br><b id="tBal">90</b> <small>森林币</small></span></div>
+          <div class="balchip r"><span class="avt r" style="width:26px;height:26px;font-size:13px">兔</span>
+            <span><small id="rName">第 2 组</small><br><b id="rBal">90</b> <small>森林币</small></span></div>
+        </div>
+      </div>
+      <div class="progress"><i id="progBar"></i></div>
+      <div id="stepBody"></div>
+
+      <details class="dt">
+        <summary>查看得益矩阵（随时对照）</summary>
+        <div class="matwrap"><table class="matrix" id="matrixMini"></table></div>
+        <p class="legend" style="margin:6px 0 0">左下 = 乌龟支付，右上 = 兔子支付。</p>
+      </details>
+      <div class="rowbtns">
+        <button class="btn ghost" id="btnQuit">终止本局，重新设置</button>
+      </div>
+    </div>
+
+    <!-- 本轮结束 -->
+    <div class="card hide" id="viewRound">
+      <h2><span class="num">四</span>本轮结束 <span class="pill" id="rrPill">第一轮</span></h2>
+      <div class="callout" id="rrLead" style="margin-bottom:14px"></div>
+      <div class="subhead">双方 10 个回合的行动选择汇总</div>
+      <div class="matwrap"><table id="rrTable"></table></div>
+      <div class="subhead">本轮得分（即本轮结束时的森林币数量）</div>
+      <div class="scorecards" id="rrScore"></div>
+      <div class="rowbtns">
+        <button class="btn primary" id="btnNextRound">第二轮开始</button>
+      </div>
+    </div>
+
+    <!-- 最终成绩 -->
+    <div class="card hide" id="viewFinal">
+      <h2><span class="num">五</span>三轮汇总与最终成绩</h2>
+      <div class="callout ok" id="finalLead" style="margin-bottom:14px"></div>
+      <div class="subhead">双方三轮游戏的行动汇总与得分</div>
+      <div class="matwrap"><table id="finalTable"></table></div>
+      <div class="subhead">最终得分（三轮平均，精确到个位）</div>
+      <div class="scorecards" id="finalScore"></div>
+      <p class="hint" id="finalNote"></p>
+      <details class="dt">
+        <summary>查看全部 30 个回合的明细</summary>
+        <div class="matwrap"><table id="finalDetail"></table></div>
+      </details>
+      <div class="rowbtns">
+        <button class="btn primary" id="btnRestart">再来一局</button>
+        <button class="btn ghost" id="btnExport">导出成绩 (.xlsx)</button>
+        <button class="btn ghost" id="btnPrint">打印 / 存为 PDF</button>
+      </div>
+      <div class="hint" id="exMsg"></div>
+    </div>
+  </section>
+
+  <footer>龟兔赛跑（第四季）· 同时博弈课堂互动系统 &nbsp;|&nbsp; 零依赖单文件 · 数据仅保存在本机浏览器，不上传</footer>
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   得益矩阵（源自《7-3+博弈游戏+龟兔赛跑第四季.docx》中的矩阵图）
+   行玩家 = 乌龟，列玩家 = 兔子；每格右上 = 兔子支付，左下 = 乌龟支付
+   ===================================================================== */
+const ML = [[-5,  7],    /* 乌龟：行玩家，格左下 */
+            [ 3, -5]];
+const NF = [[ 5, -7],    /* 兔子：列玩家，格右上 */
+            [-3,  5]];
+const ACT_ML = ["大路","小路"];   /* 乌龟的行动 */
+const ACT_NF = ["大路","小路"];   /* 兔子的行动 */
+const NR = ACT_ML.length, NC = ACT_NF.length;   /* 全文以这两个变量驱动循环与布局 */
+
+const NROUNDS = 3;      /* 3 轮 */
+const NSTEPS  = 10;     /* 每轮 10 个回合 */
+const INIT    = 90;     /* 每轮起始森林币 */
+const CN = ["零","一","二","三","四","五","六","七","八","九","十"];
+const GROUPS = 20;      /* 组号可选范围 1 – 20 */
+
+/* ============================ 状态 ============================ */
+const S = {
+  started: false,
+  tGroup: 1, rGroup: 2,
+  round: 1, step: 1,
+  phase: "turtle",        /* turtle | rabbit | result */
+  pickT: null, pickR: null,
+  balT: INIT, balR: INIT,
+  cur: [],                /* 本轮已公布的回合：{step,x,y,dt,dr,balT,balR} */
+  rounds: []              /* 已完成轮次：{round,history,balT,balR} */
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const cn = n => CN[n] || String(n);
+const fmt = v => (v < 0 ? "−" + Math.abs(v) : "+" + v);
+const money = v => String(v);
+
+/* ============================ 渲染：矩阵 ============================ */
+/* 对角排布：右上 = 列玩家（兔子），左下 = 行玩家（乌龟） */
+function matrixHtml(){
+  let h = "<tr><th></th><th colspan=\"" + NC + "\" class=\"mcol\">兔子</th></tr>";
+  h += "<tr><th></th>";
+  for (let j = 0; j < NC; j++) h += "<th>" + esc(ACT_NF[j]) + "</th>";
+  h += "</tr>";
+  for (let i = 0; i < NR; i++){
+    h += "<tr><th class=\"mrow\">" + esc(ACT_ML[i]) + "</th>";
+    for (let j = 0; j < NC; j++){
+      h += "<td class=\"pair\"><span class=\"nf\">" + esc(NF[i][j]) + "</span>" +
+           "<span class=\"ml\">" + esc(ML[i][j]) + "</span></td>";
+    }
+    h += "</tr>";
+  }
+  return h;
+}
+function renderMatrix(){
+  $("matrixTable").innerHTML = matrixHtml();
+  $("matrixMini").innerHTML = matrixHtml();
+}
+
+/* ============================ 页面切换 ============================ */
+function showPage(n){
+  $("pageRules").classList.toggle("hide", n !== 1);
+  $("pageRole").classList.toggle("hide", n !== 2);
+  $("pagePlay").classList.toggle("hide", n !== 3);
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ============================ 角色页 ============================ */
+function initSelects(){
+  const opts = [];
+  for (let g = 1; g <= GROUPS; g++) opts.push("<option value=\"" + g + "\">第 " + g + " 组</option>");
+  $("selTurtle").innerHTML = opts.join("");
+  $("selRabbit").innerHTML = opts.join("");
+  $("selTurtle").value = "1";
+  $("selRabbit").value = "2";
+  checkSame();
+}
+function checkSame(){
+  const same = $("selTurtle").value === $("selRabbit").value;
+  $("sameWarn").classList.toggle("hide", !same);
+  $("btnStartRound1").disabled = same;
+  return !same;
+}
+
+/* ============================ 开局 ============================ */
+function startGame(){
+  S.tGroup = parseInt($("selTurtle").value, 10);
+  S.rGroup = parseInt($("selRabbit").value, 10);
+  S.started = true;
+  S.rounds = [];
+  S.round = 1;
+  beginRound();
+  showPage(3);
+}
+function beginRound(){
+  S.step = 1;
+  S.phase = "turtle";
+  S.pickT = null; S.pickR = null;
+  S.balT = INIT; S.balR = INIT;
+  S.cur = [];
+  showView("step");
+  renderStep();
+}
+
+/* ============================ 视图切换 ============================ */
+function showView(v){
+  $("viewStep").classList.toggle("hide", v !== "step");
+  $("viewRound").classList.toggle("hide", v !== "round");
+  $("viewFinal").classList.toggle("hide", v !== "final");
+}
+
+/* ============================ 回合视图 ============================ */
+function renderStep(){
+  $("roundPill").textContent = "第" + cn(S.round) + "轮";
+  $("stepPill").textContent = "第 " + S.step + " / " + NSTEPS + " 回合";
+  $("tName").textContent = "第 " + S.tGroup + " 组";
+  $("rName").textContent = "第 " + S.rGroup + " 组";
+  $("tBal").textContent = money(S.balT);
+  $("rBal").textContent = money(S.balR);
+  $("progBar").style.width = ((S.step - 1) * 100 / NSTEPS) + "%";
+
+  const body = $("stepBody");
+  const tLab = "乌龟扮演者（第 " + S.tGroup + " 组）";
+  const rLab = "兔子扮演者（第 " + S.rGroup + " 组）";
+
+  if (S.phase === "turtle"){
+    body.innerHTML =
+      "<div class=\"turnbox t\">" +
+        "<div class=\"turnhead t\"><span class=\"avt t\" style=\"width:28px;height:28px;font-size:13px\">龟</span>" +
+        "<span class=\"who\">" + esc(tLab) + "，请选择行动</span></div>" +
+        "<p class=\"turntip\">第" + cn(S.round) + "轮第 " + S.step + " 回合 · 选择后将立即隐藏，兔子扮演者看不到你的选择。</p>" +
+        "<div class=\"choose t\">" +
+          "<button data-t=\"0\"><span class=\"act\">" + esc(ACT_ML[0]) + "</span><span class=\"kbd\">按 1 键</span></button>" +
+          "<button data-t=\"1\"><span class=\"act\">" + esc(ACT_ML[1]) + "</span><span class=\"kbd\">按 2 键</span></button>" +
+        "</div>" +
+      "</div>";
+    body.querySelectorAll("button[data-t]").forEach(b=>{
+      b.onclick = () => chooseTurtle(parseInt(b.dataset.t, 10));
+    });
+  }
+  else if (S.phase === "rabbit"){
+    body.innerHTML =
+      "<div class=\"lockbox\">" +
+        "<div class=\"lk\">乌龟扮演者（第 " + S.tGroup + " 组）已完成选择</div>" +
+        "<div class=\"masked\">已隐藏</div>" +
+        "<div class=\"lkbox\">乌龟的选择已遮蔽，兔子扮演者看不可见</div>" +
+      "</div>" +
+      "<div class=\"turnbox r\">" +
+        "<div class=\"turnhead r\"><span class=\"avt r\" style=\"width:28px;height:28px;font-size:13px\">兔</span>" +
+        "<span class=\"who\">" + esc(rLab) + "，请选择行动</span></div>" +
+        "<p class=\"turntip\">第" + cn(S.round) + "轮第 " + S.step + " 回合 · 你看不到乌龟的选择，请独立决策。</p>" +
+        "<div class=\"choose r\">" +
+          "<button data-r=\"0\"><span class=\"act\">" + esc(ACT_NF[0]) + "</span><span class=\"kbd\">按 1 键</span></button>" +
+          "<button data-r=\"1\"><span class=\"act\">" + esc(ACT_NF[1]) + "</span><span class=\"kbd\">按 2 键</span></button>" +
+        "</div>" +
+      "</div>";
+    body.querySelectorAll("button[data-r]").forEach(b=>{
+      b.onclick = () => chooseRabbit(parseInt(b.dataset.r, 10));
+    });
+  }
+  else { /* result */
+    const x = S.pickT, y = S.pickR;
+    const dt = ML[x][y], dr = NF[x][y];
+    const last = S.step === NSTEPS;
+    body.innerHTML =
+      "<div class=\"versus\">" +
+        "<div class=\"side t\"><div class=\"sname\"><span>乌龟 · 第 " + S.tGroup + " 组</span></div>" +
+          "<div class=\"sact\">" + esc(ACT_ML[x]) + "</div>" +
+          "<div class=\"delta " + (dt >= 0 ? "up" : "dn") + "\">" +
+            (dt >= 0 ? "赢得 " : "输掉 ") + Math.abs(dt) + " 森林币</div></div>" +
+        "<div class=\"vs\">VS</div>" +
+        "<div class=\"side r\"><div class=\"sname\"><span>兔子 · 第 " + S.rGroup + " 组</span></div>" +
+          "<div class=\"sact\">" + esc(ACT_NF[y]) + "</div>" +
+          "<div class=\"delta " + (dr >= 0 ? "up" : "dn") + "\">" +
+            (dr >= 0 ? "赢得 " : "输掉 ") + Math.abs(dr) + " 森林币</div></div>" +
+      "</div>" +
+      "<div class=\"resline\">本回合公布：乌龟「" + esc(ACT_ML[x]) + "」、兔子「" + esc(ACT_NF[y]) + "」 —— " +
+        "乌龟 " + fmt(dt) + "、兔子 " + fmt(dr) + " 森林币；" +
+        "乌龟余额 <b>" + S.balT + "</b>、兔子余额 <b>" + S.balR + "</b>。</div>" +
+      "<div class=\"rowbtns\">" +
+        "<button class=\"btn primary\" id=\"btnNextStep\">" +
+          (last ? ("第" + cn(S.round) + "轮结束，查看本轮汇总") : ("第" + cn(S.round) + "轮第 " + (S.step + 1) + " 回合")) +
+        "</button>" +
+        "<button class=\"btn ghost\" id=\"btnUndo\">本回合作废重选</button>" +
+      "</div>";
+    $("btnNextStep").onclick = nextStep;
+    $("btnUndo").onclick = undoStep;
+  }
+}
+
+function chooseTurtle(x){
+  S.pickT = x;
+  S.phase = "rabbit";
+  renderStep();
+}
+function chooseRabbit(y){
+  if (S.pickT === null) return;
+  S.pickR = y;
+  const x = S.pickT;
+  const dt = ML[x][y], dr = NF[x][y];
+  S.balT += dt; S.balR += dr;
+  S.cur.push({step:S.step, x:x, y:y, dt:dt, dr:dr, balT:S.balT, balR:S.balR});
+  S.phase = "result";
+  renderStep();
+}
+function undoStep(){
+  const last = S.cur.pop();
+  if (!last) return;
+  S.balT -= last.dt; S.balR -= last.dr;
+  S.step = last.step;
+  S.pickT = null; S.pickR = null;
+  S.phase = "turtle";
+  renderStep();
+}
+function nextStep(){
+  if (S.step < NSTEPS){
+    S.step += 1;
+    S.phase = "turtle";
+    S.pickT = null; S.pickR = null;
+    renderStep();
+  } else {
+    endRound();
+  }
+}
+
+/* ============================ 本轮汇总 ============================ */
+function endRound(){
+  S.rounds.push({round:S.round, history:S.cur.slice(), balT:S.balT, balR:S.balR});
+  renderRoundEnd();
+  showView("round");
+  $("viewRound").scrollIntoView({behavior:"smooth", block:"start"});
+}
+function renderRoundEnd(){
+  const i = S.rounds.length - 1;
+  const R = S.rounds[i];
+  $("rrPill").textContent = "第" + cn(R.round) + "轮";
+  $("btnNextRound").textContent =
+    R.round < NROUNDS ? ("第" + cn(R.round + 1) + "轮开始") : "查看三轮汇总与最终成绩";
+
+  $("rrLead").innerHTML =
+    "第" + cn(R.round) + "轮共 " + NSTEPS + " 个回合已全部结束。" +
+    "乌龟扮演者（第 " + S.tGroup + " 组）本轮得分 <b>" + R.balT + "</b> 森林币，" +
+    "兔子扮演者（第 " + S.rGroup + " 组）本轮得分 <b>" + R.balR + "</b> 森林币。";
+
+  let h = "<tr><th class=\"num\">回合</th><th>乌龟行动</th><th>兔子行动</th>" +
+          "<th class=\"num\">乌龟得失</th><th class=\"num\">兔子得失</th>" +
+          "<th class=\"num\">乌龟余额</th><th class=\"num\">兔子余额</th></tr>";
+  R.history.forEach(e=>{
+    h += "<tr><td class=\"num\">" + e.step + "</td>" +
+         "<td><span class=\"chip t\">" + esc(ACT_ML[e.x]) + "</span></td>" +
+         "<td><span class=\"chip r\">" + esc(ACT_NF[e.y]) + "</span></td>" +
+         "<td class=\"num " + (e.dt >= 0 ? "up" : "dn") + "\">" + fmt(e.dt) + "</td>" +
+         "<td class=\"num " + (e.dr >= 0 ? "up" : "dn") + "\">" + fmt(e.dr) + "</td>" +
+         "<td class=\"num\">" + e.balT + "</td><td class=\"num\">" + e.balR + "</td></tr>";
+  });
+  h += "<tr class=\"total-row\"><td class=\"num\">合计</td><td>—</td><td>—</td>" +
+       "<td class=\"num " + (R.balT - INIT >= 0 ? "up" : "dn") + "\">" + fmt(R.balT - INIT) + "</td>" +
+       "<td class=\"num " + (R.balR - INIT >= 0 ? "up" : "dn") + "\">" + fmt(R.balR - INIT) + "</td>" +
+       "<td class=\"num\">" + R.balT + "</td><td class=\"num\">" + R.balR + "</td></tr>";
+  $("rrTable").innerHTML = h;
+
+  $("rrScore").innerHTML =
+    "<div class=\"sc t\"><div class=\"who\">乌龟 · 第 " + S.tGroup + " 组</div>" +
+      "<div class=\"big\">" + R.balT + "</div><div class=\"unit\">森林币</div></div>" +
+    "<div class=\"sc r\"><div class=\"who\">兔子 · 第 " + S.rGroup + " 组</div>" +
+      "<div class=\"big\">" + R.balR + "</div><div class=\"unit\">森林币</div></div>";
+}
+
+function nextRound(){
+  if (S.round < NROUNDS){
+    S.round += 1;
+    beginRound();
+    $("viewStep").scrollIntoView({behavior:"smooth", block:"start"});
+  } else {
+    renderFinal();
+    showView("final");
+    $("viewFinal").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+}
+
+/* ============================ 最终汇总 ============================ */
+function avgOf(arr){
+  if (!arr.length) return 0;
+  return arr.reduce((a,b)=>a+b, 0) / arr.length;
+}
+function renderFinal(){
+  const rounds = S.rounds;
+  const avgT = avgOf(rounds.map(r=>r.balT));
+  const avgR = avgOf(rounds.map(r=>r.balR));
+  const finT = Math.round(avgT);
+  const finR = Math.round(avgR);
+
+  let lead;
+  if (finT > finR) lead = "最终得分：<b>乌龟（第 " + S.tGroup + " 组）" + finT + " 分</b> 高于 兔子（第 " + S.rGroup + " 组）" + finR + " 分 —— 乌龟取胜。";
+  else if (finR > finT) lead = "最终得分：<b>兔子（第 " + S.rGroup + " 组）" + finR + " 分</b> 高于 乌龟（第 " + S.tGroup + " 组）" + finT + " 分 —— 兔子取胜。";
+  else lead = "最终得分：双方均为 <b>" + finT + " 分</b> —— 平局。";
+  $("finalLead").innerHTML = "三轮游戏全部结束。" + lead +
+    "（最终得分 = 三轮得分之和 ÷ 3，精确到个位）";
+
+  /* 三轮行动汇总 */
+  let h = "<tr><th class=\"num\">轮次</th>" +
+          "<th>乌龟 10 个回合的行动</th><th>兔子 10 个回合的行动</th>" +
+          "<th class=\"num\">乌龟得分</th><th class=\"num\">兔子得分</th></tr>";
+  rounds.forEach(R=>{
+    let ct = "", cr = "";
+    R.history.forEach(e=>{
+      ct += "<span class=\"chip t\">" + esc(ACT_ML[e.x]) + "</span>";
+      cr += "<span class=\"chip r\">" + esc(ACT_NF[e.y]) + "</span>";
+    });
+    h += "<tr><td class=\"num\">第" + cn(R.round) + "轮</td><td>" + ct + "</td><td>" + cr + "</td>" +
+         "<td class=\"num\">" + R.balT + "</td><td class=\"num\">" + R.balR + "</td></tr>";
+  });
+  h += "<tr class=\"total-row\"><td class=\"num\">平均</td><td>—</td><td>—</td>" +
+       "<td class=\"num\">" + avgT.toFixed(1) + "</td><td class=\"num\">" + avgR.toFixed(1) + "</td></tr>";
+  $("finalTable").innerHTML = h;
+
+  $("finalScore").innerHTML =
+    "<div class=\"sc t\"><div class=\"who\">乌龟 · 第 " + S.tGroup + " 组</div>" +
+      "<div class=\"big\">" + finT + "</div><div class=\"unit\">分（三轮平均 " + avgT.toFixed(2) + "）</div></div>" +
+    "<div class=\"sc r\"><div class=\"who\">兔子 · 第 " + S.rGroup + " 组</div>" +
+      "<div class=\"big\">" + finR + "</div><div class=\"unit\">分（三轮平均 " + avgR.toFixed(2) + "）</div></div>";
+
+  /* 统计倾向 */
+  const cnt = {t:[0,0], r:[0,0]};
+  rounds.forEach(R=>R.history.forEach(e=>{ cnt.t[e.x]++; cnt.r[e.y]++; }));
+  $("finalNote").innerHTML =
+    "行动倾向：乌龟 " + ACT_ML.map((a,i)=>a + " " + cnt.t[i] + " 次").join("、") +
+    "；兔子 " + ACT_NF.map((a,j)=>a + " " + cnt.r[j] + " 次").join("、") +
+    "（共 " + (NROUNDS * NSTEPS) + " 个回合）。";
+
+  /* 30 回合明细 */
+  let dh = "<tr><th class=\"num\">轮次</th><th class=\"num\">回合</th><th>乌龟行动</th><th>兔子行动</th>" +
+           "<th class=\"num\">乌龟得失</th><th class=\"num\">兔子得失</th></tr>";
+  rounds.forEach(R=>R.history.forEach(e=>{
+    dh += "<tr><td class=\"num\">第" + cn(R.round) + "轮</td><td class=\"num\">" + e.step + "</td>" +
+          "<td><span class=\"chip t\">" + esc(ACT_ML[e.x]) + "</span></td>" +
+          "<td><span class=\"chip r\">" + esc(ACT_NF[e.y]) + "</span></td>" +
+          "<td class=\"num " + (e.dt >= 0 ? "up" : "dn") + "\">" + fmt(e.dt) + "</td>" +
+          "<td class=\"num " + (e.dr >= 0 ? "up" : "dn") + "\">" + fmt(e.dr) + "</td></tr>";
+  }));
+  $("finalDetail").innerHTML = dh;
+}
+
+/* =====================================================================
+   导出 .xlsx（零依赖：自写最小 ZIP + SheetML，inlineStr 存字符串）
+   ===================================================================== */
+const CRC_TABLE = (function(){
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++){
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(u8){
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < u8.length; i++) c = CRC_TABLE[(c ^ u8[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+function makeZip(files){
+  const enc = new TextEncoder();
+  const parts = [], central = [];
+  let offset = 0;
+  files.forEach(f=>{
+    const nameBytes = enc.encode(f.name);
+    const dataBytes = (typeof f.data === "string") ? enc.encode(f.data) : f.data;
+    const crc = crc32(dataBytes);
+
+    const lh = new Uint8Array(30 + nameBytes.length);
+    const lv = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034b50, true);
+    lv.setUint16(4, 20, true);
+    lv.setUint16(6, 0x0800, true);      /* UTF-8 文件名 */
+    lv.setUint16(8, 0, true);           /* 存储（不压缩） */
+    lv.setUint16(10, 0, true);
+    lv.setUint16(12, 0x21, true);       /* 1980-01-01 */
+    lv.setUint32(14, crc, true);
+    lv.setUint32(18, dataBytes.length, true);
+    lv.setUint32(22, dataBytes.length, true);
+    lv.setUint16(26, nameBytes.length, true);
+    lv.setUint16(28, 0, true);
+    lh.set(nameBytes, 30);
+    parts.push(lh, dataBytes);
+
+    const ch = new Uint8Array(46 + nameBytes.length);
+    const cv = new DataView(ch.buffer);
+    cv.setUint32(0, 0x02014b50, true);
+    cv.setUint16(4, 20, true);
+    cv.setUint16(6, 20, true);
+    cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, 0, true);
+    cv.setUint16(12, 0, true);
+    cv.setUint16(14, 0x21, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, dataBytes.length, true);
+    cv.setUint32(24, dataBytes.length, true);
+    cv.setUint16(28, nameBytes.length, true);
+    cv.setUint32(42, offset, true);
+    ch.set(nameBytes, 46);
+    central.push(ch);
+
+    offset += lh.length + dataBytes.length;
+  });
+  let cdSize = 0;
+  central.forEach(c=>{ cdSize += c.length; });
+  const eocd = new Uint8Array(22);
+  const ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(8, files.length, true);
+  ev.setUint16(10, files.length, true);
+  ev.setUint32(12, cdSize, true);
+  ev.setUint32(16, offset, true);
+  return new Blob(parts.concat(central, [eocd]),
+    {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+}
+function xEsc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+                  .replace(/"/g,"&quot;").replace(/'/g,"&apos;");
+}
+function colName(n){           /* 1 -> A */
+  let s = "";
+  while (n > 0){ const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = (n - 1 - m) / 26; }
+  return s;
+}
+function sheetXml(rows){
+  let x = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+    "<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\"><sheetData>";
+  rows.forEach((row, ri)=>{
+    x += "<row r=\"" + (ri + 1) + "\">";
+    row.forEach((v, ci)=>{
+      if (v === null || v === undefined || v === "") return;
+      const ref = colName(ci + 1) + (ri + 1);
+      if (typeof v === "number" && isFinite(v)){
+        x += "<c r=\"" + ref + "\"><v>" + v + "</v></c>";
+      } else {
+        x += "<c r=\"" + ref + "\" t=\"inlineStr\"><is><t xml:space=\"preserve\">" + xEsc(v) + "</t></is></c>";
+      }
+    });
+    x += "</row>";
+  });
+  return x + "</sheetData></worksheet>";
+}
+function buildWorkbook(rows){
+  const files = [
+    { name:"[Content_Types].xml", data:
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+      "<Types xmlns=\"http://schemas.openxmlformats.org/package/2006/content-types\">" +
+      "<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-package.relationships+xml\"/>" +
+      "<Default Extension=\"xml\" ContentType=\"application/xml\"/>" +
+      "<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>" +
+      "<Override PartName=\"/xl/worksheets/sheet1.xml\" ContentType=\"application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml\"/>" +
+      "</Types>" },
+    { name:"_rels/.rels", data:
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+      "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
+      "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument\" Target=\"xl/workbook.xml\"/>" +
+      "</Relationships>" },
+    { name:"xl/workbook.xml", data:
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+      "<workbook xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" " +
+      "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">" +
+      "<sheets><sheet name=\"对局记录\" sheetId=\"1\" r:id=\"rId1\"/></sheets></workbook>" },
+    { name:"xl/_rels/workbook.xml.rels", data:
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+      "<Relationships xmlns=\"http://schemas.openxmlformats.org/package/2006/relationships\">" +
+      "<Relationship Id=\"rId1\" Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"worksheets/sheet1.xml\"/>" +
+      "</Relationships>" },
+    { name:"xl/worksheets/sheet1.xml", data: sheetXml(rows) }
+  ];
+  return makeZip(files);
+}
+function exportXlsx(){
+  const rows = [];
+  rows.push(["龟兔赛跑同时博弈（第四季）· 对局记录"]);
+  rows.push(["乌龟扮演者", "第 " + S.tGroup + " 组", "兔子扮演者", "第 " + S.rGroup + " 组"]);
+  rows.push(["导出时间", new Date().toLocaleString("zh-CN")]);
+  rows.push([]);
+  rows.push(["轮次","回合","乌龟行动","兔子行动","乌龟得失","兔子得失","乌龟余额","兔子余额"]);
+  S.rounds.forEach(R=>R.history.forEach(e=>{
+    rows.push(["第" + cn(R.round) + "轮", e.step, ACT_ML[e.x], ACT_NF[e.y], e.dt, e.dr, e.balT, e.balR]);
+  }));
+  rows.push([]);
+  rows.push(["轮次","乌龟本轮得分","兔子本轮得分"]);
+  S.rounds.forEach(R=>rows.push(["第" + cn(R.round) + "轮", R.balT, R.balR]));
+  const avgT = avgOf(S.rounds.map(r=>r.balT)), avgR = avgOf(S.rounds.map(r=>r.balR));
+  rows.push(["三轮平均", Number(avgT.toFixed(2)), Number(avgR.toFixed(2))]);
+  rows.push(["最终得分（精确到个位）", Math.round(avgT), Math.round(avgR)]);
+  rows.push([]);
+  rows.push(["得益矩阵（行=乌龟，列=兔子；左下=乌龟支付，右上=兔子支付）"]);
+  rows.push([""].concat(ACT_NF));
+  for (let i = 0; i < NR; i++){
+    const line = [ACT_ML[i]];
+    for (let j = 0; j < NC; j++) line.push("龟 " + ML[i][j] + " / 兔 " + NF[i][j]);
+    rows.push(line);
+  }
+  const blob = buildWorkbook(rows);
+  const name = "龟兔赛跑第四季-对局记录-第" + S.tGroup + "组VS第" + S.rGroup + "组.xlsx";
+  download(blob, name);
+}
+
+function download(blob, filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+}
+
+/* ============================ 键盘 ============================ */
+document.addEventListener("keydown", e=>{
+  if ($("pagePlay").classList.contains("hide")) return;
+  if ($("viewStep").classList.contains("hide")) return;
+  if (S.phase === "turtle" && (e.key === "1" || e.key === "2")) chooseTurtle(parseInt(e.key, 10) - 1);
+  else if (S.phase === "rabbit" && (e.key === "1" || e.key === "2")) chooseRabbit(parseInt(e.key, 10) - 1);
+  else if (S.phase === "result" && e.key === "Enter") nextStep();
+});
+
+/* ============================ 绑定 ============================ */
+function resetAll(){
+  S.started = false;
+  S.round = 1;
+  S.rounds = [];
+  S.phase = "turtle";
+  S.pickT = null; S.pickR = null;
+  S.balT = INIT; S.balR = INIT;
+  S.cur = [];
+  S.step = 1;
+  showView("step");
+  $("exMsg").textContent = "";
+}
+
+$("btnToRole").onclick = () => showPage(2);
+$("btnBackRules").onclick = () => showPage(1);
+$("selTurtle").onchange = checkSame;
+$("selRabbit").onchange = checkSame;
+$("btnStartRound1").onclick = () => { if (checkSame()) startGame(); };
+$("btnNextRound").onclick = nextRound;
+$("btnRestart").onclick = () => { resetAll(); showPage(2); initSelects(); };
+$("btnExport").onclick = () => { try { exportXlsx(); $("exMsg").textContent = "已导出对局记录（.xlsx），请查看浏览器下载目录。"; }
+                                catch(err){ $("exMsg").textContent = "导出失败：" + err.message; } };
+$("btnPrint").onclick = () => window.print();
+$("btnQuit").onclick = () => {
+  if (confirm("确定要终止本局并重新设置吗？当前进度将丢失。")){
+    resetAll(); showPage(2); initSelects();
+  }
+};
+/* ============================ 启动 ============================ */
+renderMatrix();
+initSelects();
+showPage(1);
+</script>
+</body>
+</html>
