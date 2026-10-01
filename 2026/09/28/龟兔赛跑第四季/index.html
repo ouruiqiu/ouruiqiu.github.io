@@ -14,7 +14,7 @@
 <meta property="og:description" content="龟兔赛跑（第四季）· 同时博弈课堂互动系统">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-27T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-28T06:48:37.647Z">
+<meta property="article:modified_time" content="2026-10-01T00:50:58.274Z">
 <meta property="article:author" content="Ou Ruiqiu">
 <meta name="twitter:card" content="summary">
   
@@ -90,29 +90,62 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <iframe id="gt4-frame" src="/games/turtle-rabbit-s4.html" style="width:100%;border:0;min-height:900px;display:block" loading="lazy"></iframe>
+        <iframe id="gt4-frame" src="/games/turtle-rabbit-s4.html" title="龟兔赛跑（第四季）· 同时博弈课堂互动系统" style="width:100%;border:0;min-height:900px;display:block" loading="lazy"></iframe>
 
 <script>
 (function(){
   var f = document.getElementById('gt4-frame');
   if(!f) return;
+  var rafId = 0;
   function fit(){
     try{
       var d = f.contentDocument;
-      if(!d) return;
-      var h = Math.max(d.documentElement.scrollHeight, d.body ? d.body.scrollHeight : 0);
-      if(h) f.style.height = h + 'px';
+      if(!d || !d.body) return;
+      var b = d.body;
+      var h = Math.ceil(Math.max(b.scrollHeight, b.getBoundingClientRect().height));
+      if(h > 0){
+        if(Math.abs(parseInt(f.style.height || 0, 10) - h) > 1) f.style.height = h + 'px';
+        if(f.style.minHeight) f.style.minHeight = '0'; // 高度已由内容决定，解除占位钳制
+      }
     }catch(e){}
   }
-  f.addEventListener('load', function(){ fit(); setTimeout(fit, 300); setTimeout(fit, 1000); });
+  function pulse(){ // 覆盖切换页面等过渡动画期间的中间高度
+    var end = Date.now() + 600;
+    cancelAnimationFrame(rafId);
+    (function step(){ fit(); if(Date.now() < end) rafId = requestAnimationFrame(step); })();
+  }
+  function attach(){
+    fit(); pulse();
+    try{
+      var w = f.contentWindow, d = f.contentDocument;
+      if(!w || !d || !d.body) return;
+      if(w.ResizeObserver && !f._ro){ // 正文高度变化（切页、回合推进、结果展开）都会触发
+        f._ro = new w.ResizeObserver(fit);
+        f._ro.observe(d.body);
+      }
+      if(w.addEventListener && !f._bound){
+        f._bound = true;
+        w.addEventListener('orientationchange', fit);
+        d.addEventListener('transitionend', fit);
+        d.addEventListener('animationend', fit);
+        d.addEventListener('click', pulse, true);
+      }
+    }catch(e){}
+  }
+  f.addEventListener('load', function(){
+    f._ro = null; f._bound = false;
+    attach(); setTimeout(attach, 300); setTimeout(attach, 1000);
+  });
   window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
+  if(f.contentDocument && f.contentDocument.readyState === 'complete') attach();
 })();
 </script>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://ouruiqiu.github.io/2026/09/28/%E9%BE%9F%E5%85%94%E8%B5%9B%E8%B7%91%E7%AC%AC%E5%9B%9B%E5%AD%A3/" data-id="cuidTOF1xQUl1OjBdBchbdmXI" data-title="龟兔赛跑第四季" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://ouruiqiu.github.io/2026/09/28/%E9%BE%9F%E5%85%94%E8%B5%9B%E8%B7%91%E7%AC%AC%E5%9B%9B%E5%AD%A3/" data-id="cuidP0-CvysBmGHqsrxomKt51" data-title="龟兔赛跑第四季" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
